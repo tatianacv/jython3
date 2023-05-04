@@ -162,10 +162,6 @@ class JavaVisitor(EmitVisitor):
         self.visit(type.value, type.name, depth)
 
     def visitSum(self, sum, name, depth):
-        if name == "str_type" or name == "cmpop":
-            print(name, sum, is_simple(sum), not name == "excepthandler")
-            for t in sum.types:
-                print(t.fields)
         if is_simple(sum) and not name == "excepthandler":
             self.simple_sum(sum, name, depth)
             self.simple_sum_wrappers(sum, name, depth)
@@ -174,19 +170,16 @@ class JavaVisitor(EmitVisitor):
 
     def simple_sum(self, sum, name, depth):
         self.open("ast", "%sType" % name, refersToPythonTree=0)
+        self.emit('import org.python.antlr.AST;', depth)
+        self.emit('', 0)
 
-        self.emit("public interface %(name)sType {" % locals(), depth)
-        for i in range(len(sum.types)):
+        self.emit("public enum %(name)sType {" % locals(), depth)
+        self.emit("UNDEFINED,", depth + 1)
+        for i in range(len(sum.types) - 1):
             type = sum.types[i]
-            self.emit("public static final int %s = %d;" % (type.name, i + 1),
-                                                    depth + 1)
-        self.emit("", 0)
-        self.emit("public static final String[] %sTypeNames = new String[] {" %
-                    name, depth + 1)
-        self.emit('"<undef>",', depth + 2)
-        for type in sum.types:
-            self.emit('"%s",' % type.name, depth + 2)
-        self.emit("};", depth + 1)
+            self.emit("%s," % type.name, depth + 1)
+        self.emit("%s;" % sum.types[len(sum.types) - 1].name, depth + 1)
+
         self.emit("}", depth)
         self.close()
 
@@ -340,8 +333,6 @@ class JavaVisitor(EmitVisitor):
         for f in cons.fields:
             if str(f.type) == "expr_context":
                 ifaces.append("Context")
-            if str(f.type) == "str_type":
-                ifaces.append("str_typeType")
         if ifaces:
             s = "implements %s " % ", ".join(ifaces)
         else:
@@ -646,7 +637,6 @@ class JavaVisitor(EmitVisitor):
         'expr_context' : 'expr_contextType',
         'operator' : 'operatorType',
         'unaryop' : 'unaryopType',
-        'str_type' : 'str_typeType'
     }
 
     def fieldDef(self, field):

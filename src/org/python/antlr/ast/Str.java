@@ -43,93 +43,9 @@ public static final PyType TYPE = PyType.fromClass(Str.class);
         this.s = AstAdapters.py2string(s);
     }
 
-    private Integer type;
-    public Integer getInternalType() {
-        return type;
-    }
-    @ExposedGet(name = "type")
-    public PyObject getExceptType() {
-        return Py.newInteger(type);
-    }
-    @ExposedSet(name = "type")
-    public void setExceptType(PyObject type) {
-        this.type = AstAdapters.py2int(type);
-    }
-
-    private Boolean unicode;
-    public Boolean getInternalUnicode() {
-        return unicode;
-    }
-    @ExposedGet(name = "unicode")
-    public PyObject getUnicode() {
-        if (unicode) return Py.True;
-        return Py.False;
-    }
-    @ExposedSet(name = "unicode")
-    public void setUnicode(PyObject unicode) {
-        this.unicode = AstAdapters.py2bool(unicode);
-    }
-
-    private Boolean raw;
-    public Boolean getInternalRaw() {
-        return raw;
-    }
-    @ExposedGet(name = "raw")
-    public PyObject getRaw() {
-        if (raw) return Py.True;
-        return Py.False;
-    }
-    @ExposedSet(name = "raw")
-    public void setRaw(PyObject raw) {
-        this.raw = AstAdapters.py2bool(raw);
-    }
-
-    private Boolean binary;
-    public Boolean getInternalBinary() {
-        return binary;
-    }
-    @ExposedGet(name = "binary")
-    public PyObject getBinary() {
-        if (binary) return Py.True;
-        return Py.False;
-    }
-    @ExposedSet(name = "binary")
-    public void setBinary(PyObject binary) {
-        this.binary = AstAdapters.py2bool(binary);
-    }
-
-    private Boolean fstring;
-    public Boolean getInternalFstring() {
-        return fstring;
-    }
-    @ExposedGet(name = "fstring")
-    public PyObject getFstring() {
-        if (fstring) return Py.True;
-        return Py.False;
-    }
-    @ExposedSet(name = "fstring")
-    public void setFstring(PyObject fstring) {
-        this.fstring = AstAdapters.py2bool(fstring);
-    }
-
-    private java.util.List<stmt> fstring_nodes;
-    public java.util.List<stmt> getInternalFstring_nodes() {
-        return fstring_nodes;
-    }
-    @ExposedGet(name = "fstring_nodes")
-    public PyObject getFstring_nodes() {
-        return new AstList(fstring_nodes, AstAdapters.stmtAdapter);
-    }
-    @ExposedSet(name = "fstring_nodes")
-    public void setFstring_nodes(PyObject fstring_nodes) {
-        this.fstring_nodes = AstAdapters.py2stmtList(fstring_nodes);
-    }
-
 
     private final static PyUnicode[] fields =
-    new PyUnicode[] {new PyUnicode("s"), new PyUnicode("type"), new PyUnicode("unicode"), new
-                      PyUnicode("raw"), new PyUnicode("binary"), new PyUnicode("fstring"), new
-                      PyUnicode("fstring_nodes")};
+    new PyUnicode[] {new PyUnicode("s")};
     @ExposedGet(name = "_fields")
     public PyUnicode[] get_fields() { return fields; }
 
@@ -148,90 +64,37 @@ public static final PyType TYPE = PyType.fromClass(Str.class);
     @ExposedMethod
     public void Str___init__(PyObject[] args, String[] keywords) {
         ArgParser ap = new ArgParser("Str", args, keywords, new String[]
-            {"s", "type", "unicode", "raw", "binary", "fstring", "fstring_nodes", "lineno",
-              "col_offset"}, 7, true);
+            {"s", "lineno", "col_offset"}, 1, true);
         setS(ap.getPyObject(0, Py.None));
-        setExceptType(ap.getPyObject(1, Py.None));
-        setUnicode(ap.getPyObject(2, Py.None));
-        setRaw(ap.getPyObject(3, Py.None));
-        setBinary(ap.getPyObject(4, Py.None));
-        setFstring(ap.getPyObject(5, Py.None));
-        setFstring_nodes(ap.getPyObject(6, Py.None));
-        int lin = ap.getInt(7, -1);
+        int lin = ap.getInt(1, -1);
         if (lin != -1) {
             setLineno(lin);
         }
 
-        int col = ap.getInt(8, -1);
+        int col = ap.getInt(2, -1);
         if (col != -1) {
             setLineno(col);
         }
 
     }
 
-    public Str(PyObject s, PyObject type, PyObject unicode, PyObject raw, PyObject binary, PyObject
-    fstring, PyObject fstring_nodes) {
+    public Str(PyObject s) {
         setS(s);
-        setExceptType(type);
-        setUnicode(unicode);
-        setRaw(raw);
-        setBinary(binary);
-        setFstring(fstring);
-        setFstring_nodes(fstring_nodes);
     }
 
-    public Str(Token token, Object s, Integer type, Boolean unicode, Boolean raw, Boolean binary,
-    Boolean fstring, java.util.List<stmt> fstring_nodes) {
+    public Str(Token token, Object s) {
         super(token);
         this.s = s;
-        this.type = type;
-        this.unicode = unicode;
-        this.raw = raw;
-        this.binary = binary;
-        this.fstring = fstring;
-        this.fstring_nodes = fstring_nodes;
-        if (fstring_nodes == null) {
-            this.fstring_nodes = new ArrayList<stmt>();
-        }
-        for(PythonTree t : this.fstring_nodes) {
-            addChild(t);
-        }
     }
 
-    public Str(Integer ttype, Token token, Object s, Integer type, Boolean unicode, Boolean raw,
-    Boolean binary, Boolean fstring, java.util.List<stmt> fstring_nodes) {
+    public Str(Integer ttype, Token token, Object s) {
         super(ttype, token);
         this.s = s;
-        this.type = type;
-        this.unicode = unicode;
-        this.raw = raw;
-        this.binary = binary;
-        this.fstring = fstring;
-        this.fstring_nodes = fstring_nodes;
-        if (fstring_nodes == null) {
-            this.fstring_nodes = new ArrayList<stmt>();
-        }
-        for(PythonTree t : this.fstring_nodes) {
-            addChild(t);
-        }
     }
 
-    public Str(PythonTree tree, Object s, Integer type, Boolean unicode, Boolean raw, Boolean
-    binary, Boolean fstring, java.util.List<stmt> fstring_nodes) {
+    public Str(PythonTree tree, Object s) {
         super(tree);
         this.s = s;
-        this.type = type;
-        this.unicode = unicode;
-        this.raw = raw;
-        this.binary = binary;
-        this.fstring = fstring;
-        this.fstring_nodes = fstring_nodes;
-        if (fstring_nodes == null) {
-            this.fstring_nodes = new ArrayList<stmt>();
-        }
-        for(PythonTree t : this.fstring_nodes) {
-            addChild(t);
-        }
     }
 
     @ExposedGet(name = "repr")
@@ -244,24 +107,6 @@ public static final PyType TYPE = PyType.fromClass(Str.class);
         sb.append("s=");
         sb.append(dumpThis(s));
         sb.append(",");
-        sb.append("type=");
-        sb.append(dumpThis(type));
-        sb.append(",");
-        sb.append("unicode=");
-        sb.append(dumpThis(unicode));
-        sb.append(",");
-        sb.append("raw=");
-        sb.append(dumpThis(raw));
-        sb.append(",");
-        sb.append("binary=");
-        sb.append(dumpThis(binary));
-        sb.append(",");
-        sb.append("fstring=");
-        sb.append(dumpThis(fstring));
-        sb.append(",");
-        sb.append("fstring_nodes=");
-        sb.append(dumpThis(fstring_nodes));
-        sb.append(",");
         sb.append(")");
         return sb.toString();
     }
@@ -271,12 +116,6 @@ public static final PyType TYPE = PyType.fromClass(Str.class);
     }
 
     public void traverse(VisitorIF<?> visitor) throws Exception {
-        if (fstring_nodes != null) {
-            for (PythonTree t : fstring_nodes) {
-                if (t != null)
-                    t.accept(visitor);
-            }
-        }
     }
 
     public PyObject __dict__;
