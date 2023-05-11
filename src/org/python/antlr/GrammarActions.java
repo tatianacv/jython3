@@ -546,12 +546,6 @@ public class GrammarActions {
             ustring = false;
             start++;
         }
-        if (quoteChar == 'f') {
-            ustring = false;
-            start++;
-        }
-
-
         quoteChar = string.charAt(start);
         boolean raw = false;
         if (quoteChar == 'r' || quoteChar == 'R') {
