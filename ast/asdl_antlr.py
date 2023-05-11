@@ -85,7 +85,6 @@ class EmitVisitor(asdl.VisitorBase):
             print('import org.python.core.AstList;', file=self.file)
             print('import org.python.core.Py;', file=self.file)
             print('import org.python.core.PyObject;', file=self.file)
-            print('import org.python.core.PyString;', file=self.file)
             print('import org.python.core.PyUnicode;', file=self.file)
             print('import org.python.core.PyStringMap;', file=self.file)
             print('import org.python.core.PyType;', file=self.file)
@@ -193,7 +192,6 @@ class JavaVisitor(EmitVisitor):
             self.emit('import org.python.antlr.PythonTree;', depth)
             self.emit('import org.python.core.Py;', depth)
             self.emit('import org.python.core.PyObject;', depth)
-            self.emit('import org.python.core.PyString;', depth)
             self.emit('import org.python.core.PyUnicode;', depth)
             self.emit('import org.python.core.PyType;', depth)
             self.emit('import org.python.expose.ExposedGet;', depth)
@@ -449,11 +447,20 @@ class JavaVisitor(EmitVisitor):
 
         # The accept() method
         self.emit("public <R> R accept(VisitorIF<R> visitor) throws Exception {", depth)
-        if is_product:
-            self.emit('traverse(visitor);', depth+1)
-            self.emit('return null;', depth+1)
-        else:
-            self.emit('return visitor.visit%s(this);' % clsname, depth+1)
+        self.emit('R x = null;', depth+1)
+        self.emit('if (visitor==null) {', depth+1)
+        self.emit('new RuntimeException("Unexpected node: " + this);', depth+2)
+        self.emit('} else {', depth+1)
+        self.emit('visitor.preVisit(this);', depth+2)
+        self.emit('x = visitor.visit%s(this);' % clsname, depth+2)
+        self.emit('visitor.postVisit(this);', depth+2)
+        self.emit('}', depth+1)
+        self.emit('return x;', depth+1)
+        # if is_product:
+        #     self.emit('traverse(visitor);', depth+1)
+        #     self.emit('return null;', depth+1)
+        # else:
+        #     self.emit('return visitor.visit%s(this);' % clsname, depth+1)
         self.emit("}", depth)
         self.emit("", 0)
 
