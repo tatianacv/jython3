@@ -547,6 +547,7 @@ public class GrammarActions {
             start++;
         }
         if (quoteChar == 'f') {
+            ustring = false;
             start++;
         }
 
